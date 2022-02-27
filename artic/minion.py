@@ -263,7 +263,10 @@ def run(parser, args):
     cmds.append("artic_make_depth_mask --store-rg-depths %s %s.primertrimmed.rg.sorted.bam %s.coverage_mask.txt" % (ref, args.sample, args.sample))
     cmds.append("artic_mask %s %s.coverage_mask.txt %s.fail.vcf %s.preconsensus.fasta" % (ref, args.sample, args.sample, args.sample))
 
-    # 10) generate the consensus sequence
+
+    # 10) generate the consensus sequence 
+    cmds.append("bcftools norm -cwx -f %s.preconsensus.fasta %s.gz -Oz -o %s.gz" % (args.sample, vcf_file, vcf_file))
+    cmds.append("tabix -p vcf %s.gz" % (vcf_file))
     cmds.append("bcftools consensus -f %s.preconsensus.fasta %s.gz -m %s.coverage_mask.txt -o %s.consensus.fasta" % (args.sample, vcf_file, args.sample, args.sample))
 
     # 11) apply the header to the consensus sequence and run alignment against the reference sequence
